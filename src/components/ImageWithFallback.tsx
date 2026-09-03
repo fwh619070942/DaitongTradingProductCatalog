@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { FALLBACK_IMAGE } from "../lib/images";
+import { FALLBACK_IMAGE, publicImageUrl } from "../lib/images";
 
 type ImageWithFallbackProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   src: string;
 };
 
 export function ImageWithFallback({ src, alt, ...props }: ImageWithFallbackProps) {
-  const [activeSrc, setActiveSrc] = useState(src || FALLBACK_IMAGE);
+  const fallbackSrc = publicImageUrl(FALLBACK_IMAGE);
+  const [activeSrc, setActiveSrc] = useState(publicImageUrl(src) || fallbackSrc);
 
   useEffect(() => {
-    setActiveSrc(src || FALLBACK_IMAGE);
-  }, [src]);
+    setActiveSrc(publicImageUrl(src) || fallbackSrc);
+  }, [fallbackSrc, src]);
 
   return (
     <img
@@ -18,8 +19,8 @@ export function ImageWithFallback({ src, alt, ...props }: ImageWithFallbackProps
       alt={alt}
       src={activeSrc}
       onError={() => {
-        if (activeSrc !== FALLBACK_IMAGE) {
-          setActiveSrc(FALLBACK_IMAGE);
+        if (activeSrc !== fallbackSrc) {
+          setActiveSrc(fallbackSrc);
         }
       }}
     />
