@@ -17,6 +17,7 @@ const CATALOG_DATA_VERSION = "full-catalog-web-432-v1";
 const CATALOG_VERSION_KEY = "catalog-data-version";
 const PRODUCT_STORAGE_KEY = "catalog-products-v3";
 const CATEGORY_STORAGE_KEY = "catalog-categories-v3";
+const DEFAULT_INQUIRY_ENDPOINT = "https://formsubmit.co/ajax/daitongtrading@gmail.com";
 
 function hasStalePreviewCatalog() {
   const storedProducts = window.localStorage.getItem(PRODUCT_STORAGE_KEY);
@@ -190,13 +191,19 @@ export default function App() {
   }
 
   async function handleSubmitInquiry(values: InquiryFormValues) {
+    const productSummary = selectedProducts
+      .map((product) => `${product.sku} - ${product.title} (${product.category})`)
+      .join("\n");
+
     const payload = {
-      ...values,
-      products: selectedProducts.map((product) => ({
-        title: product.title,
-        sku: product.sku,
-        category: product.category,
-      })),
+      _subject: `New quote request from ${values.name}`,
+      _template: "table",
+      _replyto: values.email,
+      name: values.name,
+      email: values.email,
+      phone: values.phone || "Not provided",
+      message: values.notes || "No custom requirements provided.",
+      selected_products: productSummary,
       emailjs: {
         serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID ?? "YOUR_EMAILJS_SERVICE_ID",
         templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID ?? "YOUR_EMAILJS_TEMPLATE_ID",
@@ -204,22 +211,17 @@ export default function App() {
       },
     };
 
-    if (import.meta.env.VITE_FORMSPREE_ENDPOINT) {
-      const response = await fetch(import.meta.env.VITE_FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    const response = await fetch(import.meta.env.VITE_FORMSPREE_ENDPOINT ?? DEFAULT_INQUIRY_ENDPOINT, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-      if (!response.ok) {
-        throw new Error("Inquiry submission failed.");
-      }
-    } else {
-      await new Promise((resolve) => window.setTimeout(resolve, 700));
-      console.info("Inquiry payload ready for Formspree or EmailJS:", payload);
+    if (!response.ok) {
+      throw new Error("Inquiry submission failed.");
     }
 
     toast.success("Inquiry submitted.");

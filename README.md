@@ -57,7 +57,15 @@ When adding or editing a product, you can also type a filename like `Image_20260
 
 ## Inquiry Submission
 
-Set a Formspree endpoint in `.env.local`:
+By default, quote requests are sent through FormSubmit's AJAX endpoint to:
+
+```text
+daitongtrading@gmail.com
+```
+
+The first live submission may trigger a confirmation email from FormSubmit. Open that email and confirm the address to activate delivery.
+
+To override the endpoint, set a Formspree or compatible endpoint in `.env.local`:
 
 ```bash
 VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/your-form-id
@@ -71,4 +79,4 @@ VITE_EMAILJS_TEMPLATE_ID=your-template-id
 VITE_EMAILJS_PUBLIC_KEY=your-public-key
 ```
 
-Without `VITE_FORMSPREE_ENDPOINT`, the app simulates the submit flow and logs the payload in the browser console.
+The payload includes the sender name, email, phone number, notes, and a SKU/title/category list of selected products.
