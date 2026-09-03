@@ -17,7 +17,7 @@ const CATALOG_DATA_VERSION = "full-catalog-web-432-v1";
 const CATALOG_VERSION_KEY = "catalog-data-version";
 const PRODUCT_STORAGE_KEY = "catalog-products-v3";
 const CATEGORY_STORAGE_KEY = "catalog-categories-v3";
-const DEFAULT_INQUIRY_ENDPOINT = "https://formsubmit.co/ajax/daitongtrading@gmail.com";
+const DEFAULT_INQUIRY_ENDPOINT = "https://formspree.io/f/xaeyjgkp";
 
 function hasStalePreviewCatalog() {
   const storedProducts = window.localStorage.getItem(PRODUCT_STORAGE_KEY);
@@ -197,8 +197,6 @@ export default function App() {
 
     const payload = {
       _subject: `New quote request from ${values.name}`,
-      _template: "table",
-      _replyto: values.email,
       name: values.name,
       email: values.email,
       phone: values.phone || "Not provided",

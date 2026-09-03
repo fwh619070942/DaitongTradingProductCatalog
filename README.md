@@ -57,15 +57,15 @@ When adding or editing a product, you can also type a filename like `Image_20260
 
 ## Inquiry Submission
 
-By default, quote requests are sent through FormSubmit's AJAX endpoint to:
+By default, quote requests are sent through Formspree:
 
 ```text
-daitongtrading@gmail.com
+https://formspree.io/f/xaeyjgkp
 ```
 
-The first live submission may trigger a confirmation email from FormSubmit. Open that email and confirm the address to activate delivery.
+The Formspree form should route submissions to `daitongtrading@gmail.com`.
 
-To override the endpoint, set a Formspree or compatible endpoint in `.env.local`:
+To override the endpoint, set a different Formspree or compatible endpoint in `.env.local`:
 
 ```bash
 VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/your-form-id
