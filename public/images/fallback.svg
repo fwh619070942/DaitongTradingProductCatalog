@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">Product image placeholder</title>
+  <desc id="desc">A soft abstract placeholder for missing catalog images.</desc>
+  <defs>
+    <linearGradient id="wash" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="52%" stop-color="#f3e8ff"/>
+      <stop offset="100%" stop-color="#d1fae5"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#wash)"/>
+  <path d="M214 390c36-82 94-122 174-120 86 1 149 44 188 128H214Z" fill="#ffffff" opacity=".72"/>
+  <path d="M252 396h292c-19 45-64 69-143 69-78 0-128-23-149-69Z" fill="#2563eb" opacity=".18"/>
+  <circle cx="526" cy="176" r="52" fill="#7c3aed" opacity=".16"/>
+  <text x="400" y="520" text-anchor="middle" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Image not available</text>
+</svg>
