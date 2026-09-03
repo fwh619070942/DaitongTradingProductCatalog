@@ -57,26 +57,46 @@ When adding or editing a product, you can also type a filename like `Image_20260
 
 ## Inquiry Submission
 
-By default, quote requests are sent through Formspree:
+The inquiry form stays in the React app, but submissions should be delivered through a small Cloudflare backend so email keys are not exposed in browser code.
 
-```text
-https://formspree.io/f/xaeyjgkp
-```
+There are two supported Cloudflare setups:
 
-The Formspree form should route submissions to `daitongtrading@gmail.com`.
+- Cloudflare Pages: deploy this whole site to Cloudflare Pages and use the included `functions/api/inquiry.js` endpoint. The form can post to `/api/inquiry`.
+- GitHub Pages plus Cloudflare Worker: keep GitHub Pages for the website and deploy the standalone Worker in `worker/`. The form should post to the Worker URL.
 
-To override the endpoint, set a different Formspree or compatible endpoint in `.env.local`:
-
-```bash
-VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/your-form-id
-```
-
-EmailJS placeholder values are included in the inquiry payload:
+For GitHub Pages, set the public frontend endpoint before building:
 
 ```bash
-VITE_EMAILJS_SERVICE_ID=your-service-id
-VITE_EMAILJS_TEMPLATE_ID=your-template-id
-VITE_EMAILJS_PUBLIC_KEY=your-public-key
+VITE_INQUIRY_ENDPOINT=https://daitong-product-inquiry.daitongtrading.workers.dev
 ```
 
-The payload includes the sender name, email, phone number, notes, and a SKU/title/category list of selected products.
+The Worker sends email through Resend. Add these Cloudflare variables/secrets:
+
+```bash
+RESEND_API_KEY=your-resend-api-key
+INQUIRY_TO_EMAIL=daitongtrading@gmail.com
+INQUIRY_FROM_EMAIL="Daitong Trading <onboarding@resend.dev>"
+ALLOWED_ORIGINS=http://localhost:5173,https://fwh619070942.github.io
+```
+
+`RESEND_API_KEY` must be stored as a Cloudflare secret, not committed to the repo. The default `INQUIRY_FROM_EMAIL` uses Resend's onboarding sender for quick testing. For production, verify a sending domain in Resend and replace it with an address on that domain.
+
+To deploy the standalone Worker after Cloudflare is connected:
+
+```bash
+npm run deploy:worker
+```
+
+For local testing, copy `worker/.dev.vars.example` to `worker/.dev.vars`, fill in `RESEND_API_KEY`, and run the Worker in a second terminal:
+
+```bash
+npm run dev:worker
+```
+
+Then set the local React app endpoint:
+
+```bash
+VITE_INQUIRY_ENDPOINT=http://localhost:8787
+```
+
+The payload includes the sender name, email, phone number, notes, and a SKU/title/category list of selected products. The email is sent to `daitongtrading@gmail.com`, and replies go to the customer's email address.

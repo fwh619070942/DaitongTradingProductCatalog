@@ -16,6 +16,7 @@ const EMPTY_FORM: InquiryFormValues = {
   email: "",
   phone: "",
   notes: "",
+  company: "",
 };
 
 export function InquiryDrawer({
@@ -98,6 +99,16 @@ export function InquiryDrawer({
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <label className="hidden" aria-hidden="true">
+              Company
+              <input
+                tabIndex={-1}
+                autoComplete="off"
+                value={values.company}
+                onChange={(event) => setValues((current) => ({ ...current, company: event.target.value }))}
+              />
+            </label>
+
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="space-y-2 text-sm font-semibold text-slate-700">
                 Name

@@ -1,0 +1,10 @@
+name = "daitong-product-inquiry"
+main = "index.js"
+compatibility_date = "2026-09-03"
+workers_dev = true
+preview_urls = false
+
+[vars]
+INQUIRY_TO_EMAIL = "daitongtrading@gmail.com"
+INQUIRY_FROM_EMAIL = "Daitong Trading <onboarding@resend.dev>"
+ALLOWED_ORIGINS = "http://localhost:5173,https://fwh619070942.github.io,https://daitongtrading.com,https://www.daitongtrading.com"

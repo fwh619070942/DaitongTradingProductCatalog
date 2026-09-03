@@ -17,7 +17,7 @@ const CATALOG_DATA_VERSION = "full-catalog-web-432-v1";
 const CATALOG_VERSION_KEY = "catalog-data-version";
 const PRODUCT_STORAGE_KEY = "catalog-products-v3";
 const CATEGORY_STORAGE_KEY = "catalog-categories-v3";
-const DEFAULT_INQUIRY_ENDPOINT = "https://formspree.io/f/xaeyjgkp";
+const DEFAULT_INQUIRY_ENDPOINT = "/api/inquiry";
 
 function hasStalePreviewCatalog() {
   const storedProducts = window.localStorage.getItem(PRODUCT_STORAGE_KEY);
@@ -196,20 +196,21 @@ export default function App() {
       .join("\n");
 
     const payload = {
-      _subject: `New quote request from ${values.name}`,
+      subject: `New quote request from ${values.name}`,
       name: values.name,
       email: values.email,
       phone: values.phone || "Not provided",
-      message: values.notes || "No custom requirements provided.",
-      selected_products: productSummary,
-      emailjs: {
-        serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID ?? "YOUR_EMAILJS_SERVICE_ID",
-        templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID ?? "YOUR_EMAILJS_TEMPLATE_ID",
-        publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY ?? "YOUR_EMAILJS_PUBLIC_KEY",
-      },
+      notes: values.notes || "No custom requirements provided.",
+      company: values.company,
+      selectedProducts: selectedProducts.map((product) => ({
+        sku: product.sku,
+        title: product.title,
+        category: product.category,
+      })),
+      selectedProductSummary: productSummary,
     };
 
-    const response = await fetch(import.meta.env.VITE_FORMSPREE_ENDPOINT ?? DEFAULT_INQUIRY_ENDPOINT, {
+    const response = await fetch(import.meta.env.VITE_INQUIRY_ENDPOINT ?? DEFAULT_INQUIRY_ENDPOINT, {
       method: "POST",
       headers: {
         Accept: "application/json",

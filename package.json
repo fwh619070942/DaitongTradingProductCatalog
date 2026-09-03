@@ -7,6 +7,8 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "build:pages": "tsc --noEmit && vite build --mode github-pages",
+    "dev:worker": "npx wrangler dev --config worker/wrangler.toml",
+    "deploy:worker": "npx wrangler deploy --config worker/wrangler.toml",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {

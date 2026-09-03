@@ -21,4 +21,5 @@ export type InquiryFormValues = {
   email: string;
   phone: string;
   notes: string;
+  company: string;
 };
