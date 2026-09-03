@@ -19,6 +19,10 @@ const PRODUCT_STORAGE_KEY = "catalog-products-v3";
 const CATEGORY_STORAGE_KEY = "catalog-categories-v3";
 const DEFAULT_INQUIRY_ENDPOINT = "/api/inquiry";
 
+function canUseAdminMode() {
+  return ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+}
+
 function hasStalePreviewCatalog() {
   const storedProducts = window.localStorage.getItem(PRODUCT_STORAGE_KEY);
 
@@ -49,6 +53,8 @@ export default function App() {
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const canUseAdmin = canUseAdminMode();
+  const isAdminEnabled = canUseAdmin && isAdmin;
 
   useEffect(() => {
     const storedVersion = window.localStorage.getItem(CATALOG_VERSION_KEY);
@@ -63,6 +69,14 @@ export default function App() {
       window.localStorage.setItem(CATALOG_VERSION_KEY, CATALOG_DATA_VERSION);
     }
   }, [setCategories, setProducts]);
+
+  useEffect(() => {
+    if (!canUseAdmin && isAdmin) {
+      setIsAdmin(false);
+      setEditingProduct(null);
+      setIsProductModalOpen(false);
+    }
+  }, [canUseAdmin, isAdmin]);
 
   const visibleProducts = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -139,16 +153,31 @@ export default function App() {
   }
 
   function openAddProductModal() {
+    if (!canUseAdmin) {
+      toast.error("Admin editing is only available in your local workspace.");
+      return;
+    }
+
     setEditingProduct(null);
     setIsProductModalOpen(true);
   }
 
   function openEditProductModal(product: Product) {
+    if (!canUseAdmin) {
+      toast.error("Admin editing is only available in your local workspace.");
+      return;
+    }
+
     setEditingProduct(product);
     setIsProductModalOpen(true);
   }
 
   function handleSaveProduct(draft: ProductDraft, productId?: string) {
+    if (!canUseAdmin) {
+      toast.error("Admin editing is only available in your local workspace.");
+      return;
+    }
+
     if (!draft.title || !draft.sku || !draft.description || !draft.category) {
       toast.error("Complete the product fields before saving.");
       return;
@@ -184,6 +213,11 @@ export default function App() {
   }
 
   function handleDeleteProduct(productId: string) {
+    if (!canUseAdmin) {
+      toast.error("Admin editing is only available in your local workspace.");
+      return;
+    }
+
     const product = products.find((item) => item.id === productId);
     setProducts((current) => current.filter((item) => item.id !== productId));
     setSelectedProductIds((current) => current.filter((id) => id !== productId));
@@ -233,7 +267,8 @@ export default function App() {
       <CatalogHeader
         searchTerm={searchTerm}
         inquiryCount={selectedProductIds.length}
-        isAdmin={isAdmin}
+        canUseAdmin={canUseAdmin}
+        isAdmin={isAdminEnabled}
         onSearchChange={setSearchTerm}
         onOpenInquiry={() => setIsInquiryOpen(true)}
         onToggleAdmin={() => setIsAdmin((current) => !current)}
@@ -242,7 +277,7 @@ export default function App() {
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
         <CategoryBar categories={categories} activeCategory={activeCategory} onChange={setActiveCategory} />
 
-        {isAdmin && (
+        {isAdminEnabled && (
           <div className="space-y-4">
             <CategoryManager
               categories={categories}
@@ -275,7 +310,7 @@ export default function App() {
                 key={product.id}
                 product={product}
                 isSelected={selectedProductIds.includes(product.id)}
-                isAdmin={isAdmin}
+                isAdmin={isAdminEnabled}
                 onToggleInquiry={handleToggleInquiry}
                 onEdit={openEditProductModal}
                 onDelete={handleDeleteProduct}

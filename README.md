@@ -55,6 +55,12 @@ The app seeds one product per source image and references each optimized image a
 
 When adding or editing a product, you can also type a filename like `Image_20260830205703_225_2_gemini_2048.jpg`; the app normalizes it to `/images/Image_20260830205703_225_2_gemini_2048.jpg`. For copied catalog files, use `/images/catalog-web/Image_20260830205703_225_2_gemini_2048.jpg`.
 
+## Admin Access
+
+Admin editing is only available on local development hosts: `localhost`, `127.0.0.1`, and `::1`. The published GitHub Pages site is visitor-only, so clients cannot see the Admin toggle or product/category editing controls.
+
+The current app stores admin edits in the browser's `localStorage`. That is useful for local catalog preparation, but it is not a shared production database. To publish permanent catalog edits, update the source product data/assets and redeploy, or add a real authenticated backend later.
+
 ## Inquiry Submission
 
 The inquiry form stays in the React app, but submissions should be delivered through a small Cloudflare backend so email keys are not exposed in browser code.

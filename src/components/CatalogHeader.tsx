@@ -3,6 +3,7 @@ import { Search, ShoppingBag } from "lucide-react";
 type CatalogHeaderProps = {
   searchTerm: string;
   inquiryCount: number;
+  canUseAdmin: boolean;
   isAdmin: boolean;
   onSearchChange: (value: string) => void;
   onOpenInquiry: () => void;
@@ -12,6 +13,7 @@ type CatalogHeaderProps = {
 export function CatalogHeader({
   searchTerm,
   inquiryCount,
+  canUseAdmin,
   isAdmin,
   onSearchChange,
   onOpenInquiry,
@@ -22,17 +24,19 @@ export function CatalogHeader({
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-bagel text-3xl text-slate-950">Daitong Product Catalog</h1>
-          <button
-            type="button"
-            onClick={onToggleAdmin}
-            className={`gentle-animation rounded-lg border px-3 py-2 text-sm font-semibold shadow-sm ${
-              isAdmin
-                ? "border-accent-purple/40 bg-accent-purple text-white"
-                : "border-white/40 bg-white/60 text-slate-700 hover:text-accent-blue"
-            }`}
-          >
-            {isAdmin ? "Admin Mode" : "Visitor Mode"}
-          </button>
+          {canUseAdmin && (
+            <button
+              type="button"
+              onClick={onToggleAdmin}
+              className={`gentle-animation rounded-lg border px-3 py-2 text-sm font-semibold shadow-sm ${
+                isAdmin
+                  ? "border-accent-purple/40 bg-accent-purple text-white"
+                  : "border-white/40 bg-white/60 text-slate-700 hover:text-accent-blue"
+              }`}
+            >
+              {isAdmin ? "Admin Mode" : "Visitor Mode"}
+            </button>
+          )}
         </div>
 
         <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto lg:min-w-[560px]">
